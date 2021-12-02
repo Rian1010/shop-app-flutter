@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_complete_guide/widgets/app_drawer.dart';
 import 'package:provider/provider.dart';
 
 import 'package:flutter_complete_guide/providers/orders.dart' show Orders;
 import '../widgets/order_item.dart';
 
 class OrdersScreen extends StatelessWidget {
+  static const routeName = '/orders';
+
   @override
   Widget build(BuildContext context) {
     final orderData = Provider.of<Orders>(context);
@@ -12,10 +15,10 @@ class OrdersScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text('Your Orders'),
       ),
+      drawer: AppDrawer(),
       body: ListView.builder(
-        itemBuilder: (ctx, i) => OrderItem(
-            id: id, amount: amount, products: products, dateTime: dateTime),
-        itemCount: orders.orderData.length,
+        itemBuilder: (ctx, i) => OrderItem(orderData.orders[i]),
+        itemCount: orderData.orders.length,
       ),
     );
   }

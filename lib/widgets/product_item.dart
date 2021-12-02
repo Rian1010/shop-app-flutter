@@ -3,7 +3,7 @@ import 'package:flutter_complete_guide/providers/product.dart';
 import 'package:flutter_complete_guide/screens/product_detail_screen.dart';
 import 'package:provider/provider.dart';
 
-class ProductItem extends StatelessWidget {
+class ProductItem extends StatelessWidget with ChangeNotifier {
   // final String id;
   // final String title;
   // final String imageUrl;
@@ -12,44 +12,49 @@ class ProductItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final product = Provider.of<Product>(context);
-
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(10),
-      child: GridTile(
-        child: GestureDetector(
-          onTap: () {
-            Navigator.of(context).pushNamed(
-              ProductDetailScreen.routeName, arguments: product.id,
-              // MaterialPageRoute(
-              //   builder: (ctx) => ProductDetailScreen(title),
-              // ),
-            );
-          },
-          child: Image.network(
-            product.imageUrl,
-            fit: BoxFit.cover,
-          ),
-        ),
-        footer: GridTileBar(
-          backgroundColor: Colors.black87,
-          leading: IconButton(
-            icon: Icon(
-              product.isFavorite ? Icons.favorite : Icons.favorite_border,
-            ),
-            onPressed: () {
-              product.toggleFavoriteStatus();
+    final product = Provider.of<Product>(context, listen: false);
+    print('product rebuilds');
+    return Consumer<Product>(
+      builder: (ctx, product, child) => ClipRRect(
+        borderRadius: BorderRadius.circular(10),
+        child: GridTile(
+          child: GestureDetector(
+            onTap: () {
+              Navigator.of(context).pushNamed(
+                ProductDetailScreen.routeName, arguments: product.id,
+                // MaterialPageRoute(
+                //   builder: (ctx) => ProductDetailScreen(title),
+                // ),
+              );
             },
-            color: Theme.of(context).accentColor,
+            child: Image.network(
+              product.imageUrl,
+              fit: BoxFit.cover,
+            ),
           ),
-          title: Text(
-            product.title,
-            textAlign: TextAlign.center,
-          ),
-          trailing: IconButton(
-            icon: Icon(Icons.shopping_cart),
-            onPressed: () {},
-            color: Theme.of(context).accentColor,
+          footer: GridTileBar(
+            backgroundColor: Colors.black87,
+            leading: Consumer<Product>(
+              builder: (ctx, product, child) => IconButton(
+                icon: Icon(
+                  product.isFavorite ? Icons.favorite : Icons.favorite_border,
+                ),
+                onPressed: () {
+                  product.toggleFavoriteStatus();
+                },
+                color: Theme.of(context).accentColor,
+              ),
+              child: Text('Never changes!'),
+            ),
+            title: Text(
+              product.title,
+              textAlign: TextAlign.center,
+            ),
+            trailing: IconButton(
+              icon: Icon(Icons.shopping_cart),
+              onPressed: () {},
+              color: Theme.of(context).accentColor,
+            ),
           ),
         ),
       ),

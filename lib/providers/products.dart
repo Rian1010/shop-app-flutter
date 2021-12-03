@@ -41,10 +41,11 @@ class Products with ChangeNotifier {
   // var _showFavoritesOnly = false;
 
   List<Product> get items {
-    // Get a copy of the items through the spread operator
     // if (_showFavoritesOnly) {
     //   return _items.where((prodItem) => prodItem.isFavorite).toList();
     // }
+
+    // Get a copy of the items through the spread operator
     return [..._items];
   }
 
@@ -66,7 +67,16 @@ class Products with ChangeNotifier {
   //   notifyListeners();
   // }
 
-  void addProduct() {
+  void addProduct(Product product) {
+    final newProduct = Product(
+      title: product.title,
+      description: product.description,
+      price: product.price,
+      imageUrl: product.imageUrl,
+      id: DateTime.now().toString(),
+    );
+    _items.add(newProduct);
+    // _items.insert(0, newProduct); // could also be used at the start of the list, instead of _items.add(newProduct);
     notifyListeners();
   }
 }
